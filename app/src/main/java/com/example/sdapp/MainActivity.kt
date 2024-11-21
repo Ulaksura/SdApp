@@ -89,7 +89,6 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_main)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -106,7 +105,7 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-       // initialize()
+        initialize()
     }
 
     private fun initialize() {
@@ -116,7 +115,7 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
         for (permission in permissions) {
             requestPermission(permission)
         }
-        showImg2Img()
+        //showImg2Img()
         errorElement = findViewById(R.id.error)
     }
 
