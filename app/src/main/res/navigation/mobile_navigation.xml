@@ -23,4 +23,14 @@
         android:name="com.example.sdapp.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/navigation_imageDisplay"
+        android:name="com.example.sdapp.ui.ImageDisplayFragment"
+        android:label="@string/image_display"
+        tools:layout="@layout/image_display" />
+    <fragment
+        android:id="@+id/navigation_generate"
+        android:name="com.example.sdapp.ui.GenerationFragment"
+        android:label="@string/generate"
+        tools:layout="@layout/generation" />
 </navigation>

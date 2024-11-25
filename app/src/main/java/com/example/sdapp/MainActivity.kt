@@ -15,28 +15,15 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.util.AttributeSet
 import android.util.Base64
+import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import okhttp3.Headers.Companion.toHeaders
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.json.JSONObject
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.lang.Integer.max
-import java.net.URL
-import kotlin.math.floor
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -44,12 +31,24 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.sdapp.databinding.ActivityMainBinding
 import com.example.sdapp.ui.FragmentManager
 import com.example.sdapp.ui.GenerationFragment
-import com.example.sdapp.ui.ImageDisplayFragment
 import com.example.sdapp.ui.MainInterface
 import com.example.sdapp.ui.NetworkManager
 import com.example.sdapp.ui.img2img.Img2ImgFragment
-import kotlin.math.max
-
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Headers.Companion.toHeaders
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONObject
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.net.URL
+import kotlin.math.floor
 
 
 class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWindowFocusChangeListener {
@@ -87,6 +86,8 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
     private var hasFocus: Boolean = true
     private val apiUrl: String = "https://stablehorde.net/api/v2/"
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -105,6 +106,11 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        initialize()
+    }
+
+    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+        return super.onCreateView(name, context, attrs)
         initialize()
     }
 
@@ -127,41 +133,72 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
     }
 
     @SuppressLint("CommitTransaction")
+//    override fun showImg2Img() {
+//
+//        val fragmentTransaction = supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.container, img2img)
+//        fragments.changeFragment(fragmentTransaction)
+//        CoroutineScope(Dispatchers.IO).launch {
+//            while(!fragments.changedFragment) { delay(10) }
+//            runOnUiThread { img2img.imageNameElement.text = imageName }
+//        }
+//    }
     override fun showImg2Img() {
-
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.container, img2img)
-        fragments.changeFragment(fragmentTransaction)
-        CoroutineScope(Dispatchers.IO).launch {
-            while(!fragments.changedFragment) { delay(10) }
-            runOnUiThread { img2img.imageNameElement.text = imageName }
+        CoroutineScope(Dispatchers.Main).launch {
+            val navController = findNavController(R.id.nav_host_fragment_activity_main)
+            navController.navigate(R.id.navigation_img2img)
         }
     }
 
     // Display generation info
     @SuppressLint("CommitTransaction")
     private fun showGeneration(generation: GenerationFragment) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.container, generation)
-        fragments.changeFragment(fragmentTransaction)
+        CoroutineScope(Dispatchers.Main).launch {
+            val navController = findNavController(R.id.nav_host_fragment_activity_main)
+            navController.navigate(R.id.navigation_generate)
+        }
     }
+//    private fun showGeneration(generation: GenerationFragment) {
+//        val fragmentTransaction = supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.container, generation)
+//        fragments.changeFragment(fragmentTransaction)
+//    }
 
     // Display an image once it's generated
     @SuppressLint("CommitTransaction")
+//    private fun showImage(imageData: ByteArray, seedUsed: String,
+//                          request: Request, prompt: String){
+//        val imageDisplay = ImageDisplayFragment()
+//        imageDisplay.imageData = imageData
+//        imageDisplay.seedUsed = seedUsed
+//        imageDisplay.request = request
+//        imageDisplay.prompt = prompt
+//        val fragmentTransaction = supportFragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.container, imageDisplay)
+//        fragments.changeFragment(fragmentTransaction)
+//    }
     private fun showImage(imageData: ByteArray, seedUsed: String,
                           request: Request, prompt: String){
-        val imageDisplay = ImageDisplayFragment()
-        imageDisplay.imageData = imageData
-        imageDisplay.seedUsed = seedUsed
-        imageDisplay.request = request
-        imageDisplay.prompt = prompt
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.container, imageDisplay)
-        fragments.changeFragment(fragmentTransaction)
+       // TODO("request передать как url, headers, post")
+        CoroutineScope(Dispatchers.Main).launch {
+        val bundle = Bundle().apply {
+            putByteArray("imageData", imageData)
+            putString("seedUsed", seedUsed)
+            putString("prompt", prompt)
+            putString("url", request.url.toString())
+            putString("headers", request.headers.toString())
+            putString("post", request.body.toString())
+        }
+
+            val navController = findNavController(R.id.nav_host_fragment_activity_main)
+            navController.navigate(R.id.navigation_imageDisplay, bundle)
+
+        }
     }
 
     // The function that calls a post a request to AI horde
     override suspend fun generateImage(request: Request, prompt: String) {
+
         val client = OkHttpClient()
         var response: Any?
         try {
@@ -188,9 +225,11 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
 
             // Show generation status
             val generation = GenerationFragment()
-            runOnUiThread {
+            //runOnUiThread {
+            withContext(Dispatchers.Main) {
                 showGeneration(generation)
             }
+           // }
 
             val id = response.get("id").toString()
             generation.id  = id
@@ -205,20 +244,30 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
 
             // Wait for generation to finish
             while (!done) {
-                if(!internet.isConnected(this)){
-                    delay(500)
-                    continue
-                }
                 response = client.newCall(newRequest).execute()
                 response = response.body?.string()
                 response = JSONObject(response)
                 done = response.get("done").toString().toBoolean()
-                val temp = response.get("wait_time").toString()
-                runOnUiThread {
-                    generation.displayWaitingTime(temp)
+                if(!internet.isConnected(this)){
+                    delay(500)
+                    continue
                 }
-                delay(5000)
             }
+//            while (!done) {
+//                if(!internet.isConnected(this)){
+//                    delay(500)
+//                    continue
+//                }
+//                response = client.newCall(newRequest).execute()
+//                response = response.body?.string()
+//                response = JSONObject(response)
+//                done = response.get("done").toString().toBoolean()
+//                val temp = response.get("wait_time").toString()
+//                withContext(Dispatchers.Main) {
+//                    generation.displayWaitingTime(temp)
+//                }
+//                delay(5000)
+//            }
 
             // Get the image and parse it's data
             newRequest = Request.Builder()
@@ -267,7 +316,7 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
                     delay(500)
                 }
             }
-            runOnUiThread {
+            withContext(Dispatchers.Main) {
                 showImage(imageData, seedUsed, request, prompt)
             }
         } catch (e: IOException) {

@@ -1,15 +1,7 @@
 package com.example.sdapp.ui.img2img
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.preference.PreferenceManager.*
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
@@ -22,17 +14,14 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import com.example.sdapp.R
 import com.example.sdapp.ui.MainInterface
 import com.example.sdapp.ui.NetworkManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.MediaType.Companion.toMediaType
@@ -40,9 +29,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.IOException
-import java.net.URL
 import kotlin.math.ceil
 
 class Img2ImgFragment : Fragment() {
@@ -62,7 +49,7 @@ class Img2ImgFragment : Fragment() {
     private lateinit var seedElement: EditText
     private lateinit var promptStrengthElement: EditText
     private lateinit var imageStrengthElement: EditText
-    private lateinit var apikeyElement: EditText
+    public lateinit var apikeyElement: EditText
 
     private var apikeyHidden: Boolean = true
     private lateinit var nsfwElement: CheckBox
@@ -81,14 +68,22 @@ class Img2ImgFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         view = inflater.inflate(R.layout.fragment_img2img, container, false)
-        initialize()
+        //initialize()
         return view
     }
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initialize()
+    }
     private fun initialize() {
         mainInterface = activity as MainInterface
 
         promptElement = view.findViewById(R.id.prompt)
+        promptElement.setText("cat")
+
+
+
+
         negativeElement = view.findViewById(R.id.negativePrompt)
 
         generationTypeElement = view.findViewById(R.id.type)
@@ -131,7 +126,7 @@ class Img2ImgFragment : Fragment() {
         widthElement.setText("512")
 
         stepsElement = view.findViewById(R.id.steps)
-        stepsElement.setText("30")
+        stepsElement.setText("1")
 
         seedElement = view.findViewById(R.id.seed)
 
