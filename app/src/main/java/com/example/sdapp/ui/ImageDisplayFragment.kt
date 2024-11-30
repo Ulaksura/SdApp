@@ -63,7 +63,7 @@ class ImageDisplayFragment : Fragment() {
 
         view.findViewById<TextView>(R.id.seedDisplay).text = "Seed used: " + seedUsed
 
-        val regenerateElement = view.findViewById<Button>(R.id.regenerate)
+        //val regenerateElement = view.findViewById<Button>(R.id.regenerate)
 //        regenerateElement.setOnClickListener { regenerateImage() }
 
         val generateElement = view.findViewById<Button>(R.id.generateNew)
@@ -94,7 +94,7 @@ class ImageDisplayFragment : Fragment() {
 
         view.findViewById<TextView>(R.id.seedDisplay).text = "Seed used: " + seedUsed
 
-        val regenerateElement = view.findViewById<Button>(R.id.regenerate)
+   //     val regenerateElement = view.findViewById<Button>(R.id.regenerate)
 //        regenerateElement.setOnClickListener { regenerateImage() }
 
         val generateElement = view.findViewById<Button>(R.id.generateNew)

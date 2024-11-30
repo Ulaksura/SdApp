@@ -20,6 +20,7 @@ import android.util.Base64
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -33,6 +34,7 @@ import com.example.sdapp.ui.FragmentManager
 import com.example.sdapp.ui.GenerationFragment
 import com.example.sdapp.ui.MainInterface
 import com.example.sdapp.ui.NetworkManager
+import com.example.sdapp.ui.gallery.Image
 import com.example.sdapp.ui.img2img.Img2ImgFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
@@ -181,19 +183,31 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
                           request: Request, prompt: String){
        // TODO("request передать как url, headers, post")
         CoroutineScope(Dispatchers.Main).launch {
-        val bundle = Bundle().apply {
-            putByteArray("imageData", imageData)
-            putString("seedUsed", seedUsed)
-            putString("prompt", prompt)
-            putString("url", request.url.toString())
-            putString("headers", request.headers.toString())
-            putString("post", request.body.toString())
-        }
+            val bundle = Bundle().apply {
+                putByteArray("imageData", imageData)
+                putString("seedUsed", seedUsed)
+                putString("prompt", prompt)
+                putString("url", request.url.toString())
+                putString("headers", request.headers.toString())
+                putString("post", request.body.toString())
+            }
 
-            val navController = findNavController(R.id.nav_host_fragment_activity_main)
-            navController.navigate(R.id.navigation_imageDisplay, bundle)
+                val navController = findNavController(R.id.nav_host_fragment_activity_main)
+                navController.navigate(R.id.navigation_imageDisplay, bundle)
 
         }
+    }
+    private val sharedViewModel: SharedGalleryViewModel by viewModels()
+
+    private fun addGallery(image:Image){
+//        val bundle = Bundle().apply {
+//            putByteArray("id", image.imageUrl)
+//            putByteArray("imageUrl", image.imageUrl)
+//            putString("seedUsed", image.seed)
+//            putString("prompt", image.prompt)
+//        }
+
+        sharedViewModel.addImage(image)
     }
 
     // The function that calls a post a request to AI horde
@@ -317,7 +331,9 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
                 }
             }
             withContext(Dispatchers.Main) {
+                addGallery(Image(id,imageData,seedUsed,prompt))
                 showImage(imageData, seedUsed, request, prompt)
+
             }
         } catch (e: IOException) {
             delay(10)

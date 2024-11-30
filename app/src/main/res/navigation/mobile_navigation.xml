@@ -33,4 +33,5 @@
         android:name="com.example.sdapp.ui.GenerationFragment"
         android:label="@string/generate"
         tools:layout="@layout/generation" />
+
 </navigation>
