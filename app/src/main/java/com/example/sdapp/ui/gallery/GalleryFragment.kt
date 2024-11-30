@@ -14,7 +14,6 @@ import com.example.sdapp.SharedGalleryViewModel
 import com.example.sdapp.databinding.FragmentGalleryBinding
 
 
-
 class GalleryFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
@@ -48,10 +47,12 @@ class GalleryFragment : Fragment() {
         galleryList.adapter = adapter
         galleryList.layoutManager = LinearLayoutManager(context)
 
+
         sharedViewModel.galleryImageList.observe(viewLifecycleOwner) { newImageList ->
             adapter.images = newImageList
             adapter.notifyDataSetChanged()
         }
     }
+
 
 }
