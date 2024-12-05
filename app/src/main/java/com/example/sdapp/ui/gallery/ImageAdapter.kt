@@ -12,11 +12,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sdapp.R
+import com.example.sdapp.dbo.ImageEntity
 import com.example.sdapp.ui.MainInterface
 import java.io.File
 import java.io.FileOutputStream
 
-class ImageAdapter(var images: List<Image>, var context: Context):RecyclerView.Adapter<ImageAdapter.MyViewHolder>(){
+class ImageAdapter(var images: List<ImageEntity>, var context: Context):RecyclerView.Adapter<ImageAdapter.MyViewHolder>(){
 
     private lateinit var mainInterface: MainInterface
     private lateinit var fileName: String

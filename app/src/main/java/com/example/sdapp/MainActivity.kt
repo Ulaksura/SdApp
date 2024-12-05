@@ -30,11 +30,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.sdapp.databinding.ActivityMainBinding
+import com.example.sdapp.dbo.ImageEntity
 import com.example.sdapp.ui.FragmentManager
 import com.example.sdapp.ui.GenerationFragment
 import com.example.sdapp.ui.MainInterface
 import com.example.sdapp.ui.NetworkManager
-import com.example.sdapp.ui.gallery.Image
 import com.example.sdapp.ui.img2img.Img2ImgFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
@@ -88,10 +88,13 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
     private var hasFocus: Boolean = true
     private val apiUrl: String = "https://stablehorde.net/api/v2/"
 
+    private val sharedViewModel: SharedGalleryViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedViewModel.loadAllImagesFromDatabase(this)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -108,6 +111,9 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
+
         initialize()
     }
 
@@ -125,6 +131,7 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
         }
         //showImg2Img()
         errorElement = findViewById(R.id.error)
+
     }
 
     private fun requestPermission(permission: String) {
@@ -197,17 +204,10 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
 
         }
     }
-    private val sharedViewModel: SharedGalleryViewModel by viewModels()
 
-    private fun addGallery(image:Image){
-//        val bundle = Bundle().apply {
-//            putByteArray("id", image.imageUrl)
-//            putByteArray("imageUrl", image.imageUrl)
-//            putString("seedUsed", image.seed)
-//            putString("prompt", image.prompt)
-//        }
-
+    private fun addGallery(image:ImageEntity){
         sharedViewModel.addImage(image)
+        sharedViewModel.addImageToDatabase(this, image)
     }
 
     // The function that calls a post a request to AI horde
@@ -267,21 +267,6 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
                     continue
                 }
             }
-//            while (!done) {
-//                if(!internet.isConnected(this)){
-//                    delay(500)
-//                    continue
-//                }
-//                response = client.newCall(newRequest).execute()
-//                response = response.body?.string()
-//                response = JSONObject(response)
-//                done = response.get("done").toString().toBoolean()
-//                val temp = response.get("wait_time").toString()
-//                withContext(Dispatchers.Main) {
-//                    generation.displayWaitingTime(temp)
-//                }
-//                delay(5000)
-//            }
 
             // Get the image and parse it's data
             newRequest = Request.Builder()
@@ -331,7 +316,7 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
                 }
             }
             withContext(Dispatchers.Main) {
-                addGallery(Image(id,imageData,seedUsed,prompt))
+                addGallery(ImageEntity(imageData = imageData,url = imgUrl,seed = seedUsed,prompt = prompt))
                 showImage(imageData, seedUsed, request, prompt)
 
             }
