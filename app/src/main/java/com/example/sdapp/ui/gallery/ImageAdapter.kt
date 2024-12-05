@@ -12,15 +12,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sdapp.R
+import com.example.sdapp.SharedGalleryViewModel
 import com.example.sdapp.dbo.ImageEntity
 import com.example.sdapp.ui.MainInterface
 import java.io.File
 import java.io.FileOutputStream
 
-class ImageAdapter(var images: List<ImageEntity>, var context: Context):RecyclerView.Adapter<ImageAdapter.MyViewHolder>(){
+
+class ImageAdapter(var images: MutableList<ImageEntity>, var context: Context):RecyclerView.Adapter<ImageAdapter.MyViewHolder>(){
 
     private lateinit var mainInterface: MainInterface
     private lateinit var fileName: String
+
+
 
 
     class MyViewHolder(view: View):RecyclerView.ViewHolder(view){
@@ -28,8 +32,8 @@ class ImageAdapter(var images: List<ImageEntity>, var context: Context):Recycler
         val seed: TextView = view.findViewById(R.id.seedGalleryDisplay)
         val prompt:TextView = view.findViewById(R.id.promptGalleryDisplay)
 
-
         val saveElement = view.findViewById<Button>(R.id.saveImage)
+        val deleteElement = view.findViewById<Button>(R.id.delete)
 
     }
 
@@ -55,6 +59,13 @@ class ImageAdapter(var images: List<ImageEntity>, var context: Context):Recycler
             saveImage(imageCount,images[position].imageData)
             holder.saveElement.text = "Image saved"
         }
+        holder.deleteElement.setOnClickListener {
+            val img = images[position]
+            deleteImage(context, img, position)
+            holder.deleteElement.text = "Deleted"
+            images.remove(img)
+            notifyItemRangeChanged(position,images.size)
+        }
 
 
         val bitmap = BitmapFactory.decodeByteArray(images[position].imageData, 0, images[position].imageData.size)
@@ -73,5 +84,10 @@ class ImageAdapter(var images: List<ImageEntity>, var context: Context):Recycler
             MediaScannerConnection.scanFile(context, arrayOf(imageFile.absolutePath), null, null)
         }
 
+    }
+
+    private fun deleteImage(context: Context, imageEntity: ImageEntity, position: Int){
+        SharedGalleryViewModel().deleteImageFromDatabase(context,imageEntity)
+        notifyItemRemoved(position)
     }
 }

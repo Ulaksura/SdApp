@@ -57,27 +57,6 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
 
     private lateinit var binding: ActivityMainBinding
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        binding = ActivityMainBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        val navView: BottomNavigationView = binding.navView
-//
-//        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-//        // Passing each menu ID as a set of Ids because each
-//        // menu should be considered as top level destinations.
-//        val appBarConfiguration = AppBarConfiguration(
-//            setOf(
-//                R.id.navigation_img2img, R.id.navigation_gallery, R.id.navigation_settings
-//            )
-//        )
-//        setupActionBarWithNavController(navController, appBarConfiguration)
-//        navView.setupWithNavController(navController)
-//    }
-
-
     private val img2img: Img2ImgFragment = Img2ImgFragment()
     private val internet: NetworkManager = NetworkManager()
     private val fragments: FragmentManager = FragmentManager()
@@ -132,6 +111,7 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
         //showImg2Img()
         errorElement = findViewById(R.id.error)
 
+
     }
 
     private fun requestPermission(permission: String) {
@@ -142,16 +122,6 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
     }
 
     @SuppressLint("CommitTransaction")
-//    override fun showImg2Img() {
-//
-//        val fragmentTransaction = supportFragmentManager.beginTransaction()
-//        fragmentTransaction.replace(R.id.container, img2img)
-//        fragments.changeFragment(fragmentTransaction)
-//        CoroutineScope(Dispatchers.IO).launch {
-//            while(!fragments.changedFragment) { delay(10) }
-//            runOnUiThread { img2img.imageNameElement.text = imageName }
-//        }
-//    }
     override fun showImg2Img() {
         CoroutineScope(Dispatchers.Main).launch {
             val navController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -167,25 +137,9 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
             navController.navigate(R.id.navigation_generate)
         }
     }
-//    private fun showGeneration(generation: GenerationFragment) {
-//        val fragmentTransaction = supportFragmentManager.beginTransaction()
-//        fragmentTransaction.replace(R.id.container, generation)
-//        fragments.changeFragment(fragmentTransaction)
-//    }
 
     // Display an image once it's generated
     @SuppressLint("CommitTransaction")
-//    private fun showImage(imageData: ByteArray, seedUsed: String,
-//                          request: Request, prompt: String){
-//        val imageDisplay = ImageDisplayFragment()
-//        imageDisplay.imageData = imageData
-//        imageDisplay.seedUsed = seedUsed
-//        imageDisplay.request = request
-//        imageDisplay.prompt = prompt
-//        val fragmentTransaction = supportFragmentManager.beginTransaction()
-//        fragmentTransaction.replace(R.id.container, imageDisplay)
-//        fragments.changeFragment(fragmentTransaction)
-//    }
     private fun showImage(imageData: ByteArray, seedUsed: String,
                           request: Request, prompt: String){
        // TODO("request передать как url, headers, post")
@@ -206,7 +160,6 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
     }
 
     private fun addGallery(image:ImageEntity){
-        sharedViewModel.addImage(image)
         sharedViewModel.addImageToDatabase(this, image)
     }
 

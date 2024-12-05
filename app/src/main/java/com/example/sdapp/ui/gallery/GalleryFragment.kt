@@ -1,5 +1,6 @@
 package com.example.sdapp.ui.gallery
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sdapp.R
 import com.example.sdapp.SharedGalleryViewModel
 import com.example.sdapp.databinding.FragmentGalleryBinding
+import com.example.sdapp.dbo.ImageEntity
 
 
 class GalleryFragment : Fragment() {
@@ -36,23 +38,34 @@ class GalleryFragment : Fragment() {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+
         return root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-            val galleryList: RecyclerView = view.findViewById(R.id.image_list)
-        adapter = ImageAdapter(emptyList(), requireContext())
+
+        val galleryList: RecyclerView = view.findViewById(R.id.image_list)
+        adapter = ImageAdapter(emptyList<ImageEntity>().toMutableList(), requireContext())
+//        adapter = ImageAdapter(sharedViewModel.galleryImageList.value.orEmpty().toMutableList(), requireContext())
+
         galleryList.adapter = adapter
         galleryList.layoutManager = LinearLayoutManager(context)
 
-
         sharedViewModel.galleryImageList.observe(viewLifecycleOwner) { newImageList ->
-            adapter.images = newImageList
+            adapter.images = newImageList.toMutableList()
             adapter.notifyDataSetChanged()
         }
     }
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+    override fun onResume() {
+        super.onResume()
+        sharedViewModel.reLoadAllImagesFromDatabase(requireContext())
+    }
 
 }

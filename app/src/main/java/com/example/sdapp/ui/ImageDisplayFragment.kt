@@ -78,34 +78,34 @@ class ImageDisplayFragment : Fragment() {
         }
     }
 
-    private fun initialize() {
-        val localPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val preferenceWriter = localPreferences.edit()
-        var imageCount = localPreferences.getInt("imageCount", 0)
-        imageCount++
-        preferenceWriter.putInt("imageCount", imageCount)
-        preferenceWriter.apply()
-        fileName = "stabledif_$imageCount.jpg"
-
-        mainInterface = activity as MainInterface
-
-        val bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
-        view.findViewById<ImageView>(R.id.imageDisplayPicture).setImageBitmap(bitmap)
-
-        view.findViewById<TextView>(R.id.seedDisplay).text = "Seed used: " + seedUsed
-
-   //     val regenerateElement = view.findViewById<Button>(R.id.regenerate)
-//        regenerateElement.setOnClickListener { regenerateImage() }
-
-        val generateElement = view.findViewById<Button>(R.id.generateNew)
-        generateElement.setOnClickListener { mainInterface.showImg2Img() }
-
-        val useAsInitElement = view.findViewById<Button>(R.id.useAsInit)
-        useAsInitElement.setOnClickListener { mainInterface.setImage(bitmap, fileName) }
-
-        val saveElement = view.findViewById<Button>(R.id.save)
-        saveElement.setOnClickListener { saveImage() }
-    }
+//    private fun initialize() {
+//        val localPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+//        val preferenceWriter = localPreferences.edit()
+//        var imageCount = localPreferences.getInt("imageCount", 0)
+//        imageCount++
+//        preferenceWriter.putInt("imageCount", imageCount)
+//        preferenceWriter.apply()
+//        fileName = "stabledif_$imageCount.jpg"
+//
+//        mainInterface = activity as MainInterface
+//
+//        val bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+//        view.findViewById<ImageView>(R.id.imageDisplayPicture).setImageBitmap(bitmap)
+//
+//        view.findViewById<TextView>(R.id.seedDisplay).text = "Seed used: " + seedUsed
+//
+//   //     val regenerateElement = view.findViewById<Button>(R.id.regenerate)
+////        regenerateElement.setOnClickListener { regenerateImage() }
+//
+//        val generateElement = view.findViewById<Button>(R.id.generateNew)
+//        generateElement.setOnClickListener { mainInterface.showImg2Img() }
+//
+//        val useAsInitElement = view.findViewById<Button>(R.id.useAsInit)
+//        useAsInitElement.setOnClickListener { mainInterface.setImage(bitmap, fileName) }
+//
+//        val saveElement = view.findViewById<Button>(R.id.save)
+//        saveElement.setOnClickListener { saveImage() }
+//    }
 
 //    private fun regenerateImage() {
 //        val generationCoroutine = CoroutineScope(Dispatchers.IO).launch {

@@ -9,6 +9,7 @@ import com.example.sdapp.dbo.ImageEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class SharedGalleryViewModel : ViewModel() {
@@ -21,33 +22,48 @@ class SharedGalleryViewModel : ViewModel() {
         updatedList.add(image)
         _galleryImageList.value = updatedList
     }
-
+    fun delImage(image: ImageEntity){
+        val updatedList = _galleryImageList.value.orEmpty().toMutableList()
+        updatedList.remove(image)
+        _galleryImageList.value = updatedList
+    }
     fun addImageToDatabase(context: Context, imageEntity: ImageEntity) {
         val imageDao = ImageDatabase.getDatabase(context).imageDao()
-        val image = imageEntity
-       // imageList.add(image)
         CoroutineScope(Dispatchers.IO).launch {
-            imageDao.insertImage(image)
+            imageDao.insertImage(imageEntity)
         }
+        addImage(imageEntity)
     }
 
     fun loadAllImagesFromDatabase(context: Context) {
         val imageDao = ImageDatabase.getDatabase(context).imageDao()
         val updatedList = _galleryImageList.value.orEmpty().toMutableList()
-
         CoroutineScope(Dispatchers.IO).launch {
             val images = imageDao.getAllImages()
             updatedList.addAll(images)
-
         }
         _galleryImageList.value = updatedList
     }
+    fun reLoadAllImagesFromDatabase(context: Context){
+        val imageDao = ImageDatabase.getDatabase(context).imageDao()
+        CoroutineScope(Dispatchers.IO).launch {
+            val images = imageDao.getAllImages()
 
-//    fun deleteImageFromDatabase(context: Context, image: ImageEntity, imageList: MutableList<ImageEntity>) {
-//        val imageDao = ImageDatabase.getDatabase(context).imageDao()
-//        imageList.remove(image)
-//        CoroutineScope(Dispatchers.IO).launch {
-//            imageDao.deleteImage(image)
-//        }
-//    }
+            withContext(Dispatchers.Main) {
+                _galleryImageList.value = images
+            }
+        }
+    }
+
+    fun deleteImageFromDatabase(context: Context, image: ImageEntity) {
+        val imageDao = ImageDatabase.getDatabase(context).imageDao()
+        CoroutineScope(Dispatchers.IO).launch {
+            imageDao.deleteImage(image)
+            val updatedImages = imageDao.getAllImages()
+            withContext(Dispatchers.Main) {
+                _galleryImageList.value = updatedImages.toMutableList()
+            }
+        }
+        //delImage(image)
+    }
 }

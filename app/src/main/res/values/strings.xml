@@ -14,7 +14,7 @@
     <string name="generateNew">Generate New</string>
     <string name="useInit">Use as Init</string>
     <string name="download">Download</string>
-
+    <string name="delete">Delete</string>
     <string name="image_display">Image</string>
     <string name="title_img2img">Img2Img</string>
     <string name="title_gallery">Gallery</string>

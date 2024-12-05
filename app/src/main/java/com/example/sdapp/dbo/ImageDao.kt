@@ -1,6 +1,7 @@
 package com.example.sdapp.dbo
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -13,6 +14,6 @@ interface ImageDao {
     fun getAllImages(): List<ImageEntity>
 
 
-    //@Delete
-   // suspend fun deleteImage(image: ImageEntity)
+    @Delete
+    fun deleteImage(image: ImageEntity)
 }
