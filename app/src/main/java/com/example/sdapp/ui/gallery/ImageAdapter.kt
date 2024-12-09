@@ -62,8 +62,6 @@ class ImageAdapter(var images: MutableList<ImageEntity>, var context: Context):R
         holder.deleteElement.setOnClickListener {
             val img = images[position]
             deleteImage(context, img, position)
-            holder.deleteElement.text = "Deleted"
-            images.remove(img)
             notifyItemRangeChanged(position,images.size)
         }
 
@@ -88,6 +86,7 @@ class ImageAdapter(var images: MutableList<ImageEntity>, var context: Context):R
 
     private fun deleteImage(context: Context, imageEntity: ImageEntity, position: Int){
         SharedGalleryViewModel().deleteImageFromDatabase(context,imageEntity)
+        images.remove(imageEntity)
         notifyItemRemoved(position)
     }
 }
