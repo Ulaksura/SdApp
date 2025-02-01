@@ -68,7 +68,7 @@ class Img2ImgFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         view = inflater.inflate(R.layout.fragment_img2img, container, false)
-        //initialize()
+       // initialize()
         return view
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,9 +80,6 @@ class Img2ImgFragment : Fragment() {
 
         promptElement = view.findViewById(R.id.prompt)
         promptElement.setText("cat")
-
-
-
 
         negativeElement = view.findViewById(R.id.negativePrompt)
 
@@ -150,14 +147,6 @@ class Img2ImgFragment : Fragment() {
         val apikey = localPreferences.getString("apikey", null)
         if(apikey != null) apikeyElement.setText(apikey)
 
-//        hideApikeyElement = view.findViewById(R.id.hideApiKey)
-//        hideApikeyElement.setOnClickListener { changeApikeyVisibility() }
-//
-//        infoApikeyElement = view.findViewById(R.id.infoApikey)
-//        infoApikeyElement.setOnClickListener {
-//            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://stability.ai/"))
-//            startActivity(browserIntent)
-//        }
 
         nsfwElement = view.findViewById(R.id.nsfw)
 

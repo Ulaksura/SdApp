@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="26dp"
-        android:text="@string/waitTime"
+        android:text=" "
         android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -38,9 +38,8 @@
         android:layout_height="wrap_content"
         android:text="@string/cancel"
         android:textSize="40sp"
-        android:textColor="#ffffff"
         android:padding="8dp"
-        android:background="@drawable/button_border" />
+        android:background="@drawable/button_border"/>
 </LinearLayout>
 
 <LinearLayout

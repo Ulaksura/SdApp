@@ -36,6 +36,7 @@ import com.example.sdapp.ui.GenerationFragment
 import com.example.sdapp.ui.MainInterface
 import com.example.sdapp.ui.NetworkManager
 import com.example.sdapp.ui.img2img.Img2ImgFragment
+import com.example.sdapp.ui.img2img.Img2ImgViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,7 +58,6 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
 
     private lateinit var binding: ActivityMainBinding
 
-    private val img2img: Img2ImgFragment = Img2ImgFragment()
     private val internet: NetworkManager = NetworkManager()
     private val fragments: FragmentManager = FragmentManager()
     private lateinit var errorElement: TextView
@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
     private var imageName: String = ""
     private var hasFocus: Boolean = true
     private val apiUrl: String = "https://stablehorde.net/api/v2/"
+    private val img2img: Img2ImgFragment = Img2ImgFragment()
 
     private val sharedViewModel: SharedGalleryViewModel by viewModels()
 
@@ -306,13 +307,27 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
         val intext = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(intext,0)
     }
+    private val Img2ImgViewModel: Img2ImgViewModel by viewModels()
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
         if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
             val pickedPhoto = data.data
             if (pickedPhoto != null) {
                 imageName = getFileName(pickedPhoto)
-                img2img.imageNameElement.text = imageName
-                pickedImage = MediaStore.Images.Media.getBitmap(this.contentResolver,pickedPhoto)
+//                img2img.imageNameElement.text = imageName
+//                pickedImage = MediaStore.Images.Media.getBitmap(this.contentResolver,pickedPhoto)
+//                pickedImage = resizeImage(pickedImage!!)
+                val fragment = supportFragmentManager.findFragmentById(R.id.img2) as? Img2ImgFragment
+                if (fragment != null) {
+                    // Проверяем инициализацию свойства imageNameElement
+                    fragment.imageNameElement.text = imageName
+                }
+
+
+                // Обработка изображения
+                pickedImage = MediaStore.Images.Media.getBitmap(this.contentResolver, pickedPhoto)
                 pickedImage = resizeImage(pickedImage!!)
             }
         }
