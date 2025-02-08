@@ -81,7 +81,7 @@ class Img2ImgFragment : Fragment() {
         mainInterface = activity as MainInterface
 
         promptElement = view.findViewById(R.id.prompt)
-        promptElement.setText("cat")
+        promptElement.setText("room")
 
         negativeElement = view.findViewById(R.id.negativePrompt)
 
@@ -119,7 +119,7 @@ class Img2ImgFragment : Fragment() {
             arrayOf("Default Model")
         )
         )
-        generationModelElement.setText("Default Model")
+        generationModelElement.setText("ModernArt Diffusion")
         generationModelElement.threshold = 1
         CoroutineScope(Dispatchers.IO).launch { getModels() }
 
@@ -162,7 +162,7 @@ class Img2ImgFragment : Fragment() {
         }
 
         stepsElement = view.findViewById(R.id.steps)
-        stepsElement.setText("1")
+        stepsElement.setText("20")
 
         seedElement = view.findViewById(R.id.seed)
 
