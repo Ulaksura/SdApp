@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sdapp.DB.AppDatabase
 import com.example.sdapp.DB.User
@@ -20,6 +21,7 @@ import com.example.sdapp.security.generateRandomSalt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 private const val PASSWORD_PATTERN =
@@ -57,6 +59,8 @@ class RegFragment: Fragment() {
             val email = userEmail.text.toString().trim()
             val password = userPassword.text.toString().trim()
 
+
+
             if (login == "" || email == "" || password == "")
                 Toast.makeText(requireContext(), "Не все поля заполнены", Toast.LENGTH_LONG).show()
             else if (login.length <= 3) {
@@ -64,7 +68,8 @@ class RegFragment: Fragment() {
                     .show()
                 userLogin.text.clear()
 
-            } else if (!emailIsValid(email)) {
+            }
+            else if (!emailIsValid(email)) {
                 Toast.makeText(requireContext(), "Неверный формат почты", Toast.LENGTH_LONG)
                     .show()
                 userEmail.text.clear()
@@ -78,30 +83,45 @@ class RegFragment: Fragment() {
                     passwordErrorLayout.visibility = View.GONE
                 }
             } else {
-                CoroutineScope(Dispatchers.IO).launch {
+                lifecycleScope.launch {
                     val db = AppDatabase.getInstance(requireContext())
                     val userDao = db.userDao()
-                    val salt = generateRandomSalt()
-                    val user = User(
-                        login = login,
-                        password = generateHash(password, salt),
-                        salt = salt,
-                        email = email,
-                        apiKey = null
-                    )
-                    val userId = userDao.insertUser(user)
-                }
+                    val isUserEx = withContext(Dispatchers.IO) {
+                        userDao.getUserByLogin(login) != null
+                    }
 
-                Toast.makeText(
-                    requireContext(),
-                    "Пользователь $login зарегестрирован",
-                    Toast.LENGTH_LONG
-                )
-                    .show()
-                passwordErrorLayout.visibility = View.GONE
-                userLogin.text.clear()
-                userEmail.text.clear()
-                userPassword.text.clear()
+                    if (isUserEx) {
+                        Toast.makeText(requireContext(), "Пользователь $login уже существует", Toast.LENGTH_LONG)
+                            .show()
+                        userLogin.text.clear()
+                    } else {
+
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val db = AppDatabase.getInstance(requireContext())
+                            val userDao = db.userDao()
+                            val salt = generateRandomSalt()
+                            val user = User(
+                                login = login,
+                                password = generateHash(password, salt),
+                                salt = salt,
+                                email = email,
+                                apiKey = null
+                            )
+                            val userId = userDao.insertUser(user)
+                        }
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Пользователь $login зарегестрирован",
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                        passwordErrorLayout.visibility = View.GONE
+                        userLogin.text.clear()
+                        userEmail.text.clear()
+                        userPassword.text.clear()
+                    }
+                }
             }
         }
     }

@@ -5,7 +5,6 @@
     android:id="@+id/imgG"
     android:layout_height="wrap_content"
     android:paddingBottom="55dp"
-    android:background="#EDEDED"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
@@ -22,7 +21,8 @@
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="MissingConstraints"
         tools:srcCompat="@tools:sample/avatars" />
-
+3011954239
+    room, white ## red
     <TextView
         android:id="@+id/seedGalleryDisplay"
         android:layout_width="match_parent"

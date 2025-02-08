@@ -18,7 +18,7 @@ fun ByteArray.toHexString(): String =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
         HexFormat.of().formatHex(this)
     } else {
-        joinToString("") { "%02x".format(it) } // Альтернативный метод
+        joinToString("") { "%02x".format(it) }
     }
 
 private const val ALGORITHM = "PBKDF2WithHmacSHA512"
