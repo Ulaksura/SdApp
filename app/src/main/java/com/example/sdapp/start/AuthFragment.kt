@@ -1,6 +1,9 @@
 package com.example.sdapp.start
 
 import android.os.Bundle
+import android.preference.PreferenceManager.getDefaultSharedPreferences
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,10 +40,25 @@ class AuthFragment: Fragment() {
         val userPassword: EditText = view.findViewById(R.id.user_pass_auth)
         val linkToReg: TextView = view.findViewById(R.id.link_to_reg)
 
-        userLogin.setText("Uwwu")
-        userPassword.setText("Uwwu123@")
+        //userLogin.setText("Uwwu")
+        //userPassword.setText("Uwwu123@")
         linkToReg.setOnClickListener {
             navController.navigate(R.id.navigation_reg)
+        }
+
+        userLogin.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                saveLogin(s.toString())
+            }
+
+            override fun afterTextChanged(p0: Editable?) {}
+        })
+        val localPreferences = getDefaultSharedPreferences(requireContext())
+        val loginS = localPreferences.getString("login", null)
+        if(loginS != null){
+            userLogin.setText(loginS)
         }
 
         val auth: Button = view.findViewById(R.id.button_auth)
@@ -73,7 +91,7 @@ class AuthFragment: Fragment() {
                                 Toast.LENGTH_LONG
                             )
                                 .show()
-                            userLogin.text.clear()
+                          //  userLogin.text.clear()
                             userPassword.text.clear()
                             SharedGalleryViewModel().loadAllImagesFromDatabase(requireContext(),
                                 authUser.idAuthUser)
@@ -93,5 +111,11 @@ class AuthFragment: Fragment() {
                 }
             }
         }
+    }
+    private fun saveLogin(login: String) {
+        val localPreferences = getDefaultSharedPreferences(requireContext())
+        val preferenceWriter = localPreferences.edit()
+        preferenceWriter.putString("login", login)
+        preferenceWriter.apply()
     }
 }
