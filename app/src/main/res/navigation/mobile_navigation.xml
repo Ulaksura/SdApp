@@ -16,7 +16,11 @@
         android:id="@+id/navigation_gallery"
         android:name="com.example.sdapp.ui.gallery.GalleryFragment"
         android:label="@string/title_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_gallery" >
+        <action
+            android:id="@+id/action_navigation_gallery_to_navigation_image_info"
+            app:destination="@id/navigation_image_info" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_settings"
@@ -44,5 +48,11 @@
         android:label="Registration"
         tools:layout="@layout/fragment_registration" />
 
+    <fragment
+        android:id="@+id/navigation_image_info"
+        android:name="com.example.sdapp.ImageInfo"
+        android:label="Image Info"
+        tools:layout="@layout/image_info">
+    </fragment>
 
 </navigation>

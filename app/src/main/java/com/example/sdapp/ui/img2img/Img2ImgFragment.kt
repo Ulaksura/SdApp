@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -49,6 +50,11 @@ class Img2ImgFragment : Fragment() {
     private lateinit var nsfwElement: CheckBox
     private lateinit var censorElement: CheckBox
     private lateinit var generateElement: Button
+
+    private lateinit var button1: Button
+    private lateinit var button2: Button
+    private lateinit var button3: Button
+
     private val apiUrl: String = "https://stablehorde.net/api/v2/"
 
     // Enum class used for setting the generation
@@ -63,10 +69,12 @@ class Img2ImgFragment : Fragment() {
     ): View? {
         view = inflater.inflate(R.layout.fragment_img2img, container, false)
        // initialize()
+
         return view
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initialize()
     }
     private fun initialize() {
@@ -82,7 +90,27 @@ class Img2ImgFragment : Fragment() {
             requireContext(),
             R.layout.spinneritem,
             GenerationType.values()
+
         )
+        generationTypeElement.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when (generationTypeElement.selectedItem) {
+                    GenerationType.TXT2IMG -> imageElement.visibility = View.GONE
+                    else -> {
+                        imageElement.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+        }
 
         generationModelElement = view.findViewById(R.id.model)
         generationModelElement.setAdapter(ArrayAdapter(
@@ -110,11 +138,28 @@ class Img2ImgFragment : Fragment() {
         imageElement = view.findViewById(R.id.upload)
         imageElement.setOnClickListener { mainInterface.uploadImage() }
 
+
         heightElement = view.findViewById(R.id.height)
         heightElement.setText("512")
 
         widthElement = view.findViewById(R.id.width)
         widthElement.setText("512")
+
+        button1 = view.findViewById(R.id.button_512_512)
+        button1.setOnClickListener {
+            heightElement.setText("512")
+            widthElement.setText("512")
+        }
+        button2 = view.findViewById(R.id.button_512_768)
+        button2.setOnClickListener {
+            heightElement.setText("768")
+            widthElement.setText("512")
+        }
+        button3 = view.findViewById(R.id.button_768_512)
+        button3.setOnClickListener {
+            heightElement.setText("512")
+            widthElement.setText("768")
+        }
 
         stepsElement = view.findViewById(R.id.steps)
         stepsElement.setText("1")
@@ -138,6 +183,7 @@ class Img2ImgFragment : Fragment() {
             generateRequest()
             CoroutineScope(Dispatchers.IO).launch { getModels() }
         }
+
     }
 
     private fun generateRequest() {

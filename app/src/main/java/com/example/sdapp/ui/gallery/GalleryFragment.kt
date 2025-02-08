@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.sdapp.DB.ImageEntity
@@ -15,6 +16,7 @@ import com.example.sdapp.R
 import com.example.sdapp.SharedGalleryViewModel
 import com.example.sdapp.authUser
 import com.example.sdapp.databinding.FragmentGalleryBinding
+import com.example.sdapp.infoImage
 
 
 class GalleryFragment : Fragment() {
@@ -49,17 +51,25 @@ class GalleryFragment : Fragment() {
 
 
         val galleryList: RecyclerView = view.findViewById(R.id.image_list)
-        adapter = ImageAdapter(emptyList<ImageEntity>().toMutableList(), requireContext())
+        adapter = ImageAdapter(emptyList<ImageEntity>().toMutableList(), requireContext()){
+            openImageDetails(it)
+        }
 //        adapter = ImageAdapter(sharedViewModel.galleryImageList.value.orEmpty().toMutableList(), requireContext())
 
         galleryList.adapter = adapter
        // galleryList.layoutManager = LinearLayoutManager(context)
         galleryList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-
         sharedViewModel.galleryImageList.observe(viewLifecycleOwner) { newImageList ->
             adapter.images = newImageList.toMutableList()
             adapter.notifyDataSetChanged()
         }
+    }
+    private fun openImageDetails(imageEntity: ImageEntity) {
+        // Переход на новый фрагмент
+
+        infoImage = imageEntity
+        findNavController().navigate(R.id.navigation_image_info)
+
     }
     override fun onDestroyView() {
         super.onDestroyView()

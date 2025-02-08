@@ -1,5 +1,7 @@
 package com.example.sdapp.ui.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.text.method.HideReturnsTransformationMethod
@@ -59,9 +61,16 @@ class SettingsFragment : Fragment() {
 
         val apiKeyUser: EditText = view.findViewById(R.id.editTextApiKey)
         val saveButton: Button = view.findViewById(R.id.saveButton)
+        val linkToGetApi:Button = view.findViewById(R.id.apiButton)
         //apiKeyUser.text = authUser.getUserAPI()
         //короче с этой апишкой, надо будет с основного проекта кусок спизидть
         apiKeyUser.setText(authUser.getUserAPI())
+
+        linkToGetApi.setOnClickListener {
+            val url = "https://stablehorde.net/register"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        }
 
         saveButton.setOnClickListener{
             authUser.setUserAPI(apiKeyUser.text.toString().trim())

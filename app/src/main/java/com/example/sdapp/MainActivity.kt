@@ -108,6 +108,10 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
         initialize()
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        return navController.navigateUp()|| super.onSupportNavigateUp()
+    }
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
         return super.onCreateView(name, context, attrs)
         initialize()
@@ -316,6 +320,7 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
     // Allows the user to upload an image
     override fun uploadImage() {
         val intext = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
         startActivityForResult(intext,0)
     }
     private val Img2ImgViewModel: Img2ImgViewModel by viewModels()

@@ -23,6 +23,7 @@ data class User(
         onDelete = ForeignKey.CASCADE
     )]
 )
+
 data class ImageEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "user_id") val userId: Int,

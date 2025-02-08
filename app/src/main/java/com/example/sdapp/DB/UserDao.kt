@@ -36,4 +36,8 @@ interface UserDao {
 
     @Delete
     fun deleteImage(image: ImageEntity)
+
+    @Query("SELECT * FROM images WHERE user_id = :userId AND id = :imageId LIMIT 1")
+    fun getImageByUserAndId(userId: Int, imageId: Int): ImageEntity?
+
 }

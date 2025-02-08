@@ -37,6 +37,8 @@ class AuthFragment: Fragment() {
         val userPassword: EditText = view.findViewById(R.id.user_pass_auth)
         val linkToReg: TextView = view.findViewById(R.id.link_to_reg)
 
+        userLogin.setText("Uwwu")
+        userPassword.setText("Uwwu123@")
         linkToReg.setOnClickListener {
             navController.navigate(R.id.navigation_reg)
         }

@@ -17,13 +17,18 @@ import java.io.File
 import java.io.FileOutputStream
 
 
-class ImageAdapter(var images: MutableList<ImageEntity>, var context: Context):RecyclerView.Adapter<ImageAdapter.MyViewHolder>(){
+class ImageAdapter(var images: MutableList<ImageEntity>, var context: Context,
+                   private val onImageClick: (ImageEntity) -> Unit
+):RecyclerView.Adapter<ImageAdapter.MyViewHolder>(){
 
     private lateinit var mainInterface: MainInterface
     private lateinit var fileName: String
 
+
+
     class MyViewHolder(view: View):RecyclerView.ViewHolder(view){
         val image: ImageView = view.findViewById(R.id.imageGalleryPicture)
+
 //        val seed: TextView = view.findViewById(R.id.seedGalleryDisplay)
 //        val prompt:TextView = view.findViewById(R.id.promptGalleryDisplay)
 //
@@ -31,6 +36,7 @@ class ImageAdapter(var images: MutableList<ImageEntity>, var context: Context):R
 //        val deleteElement = view.findViewById<Button>(R.id.delete)
 
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.image_gallery,parent,false)
@@ -50,6 +56,11 @@ class ImageAdapter(var images: MutableList<ImageEntity>, var context: Context):R
             "drawable",
             context.packageName
         )
+
+        holder.image.setOnClickListener {
+            onImageClick(images[position])
+        }
+
 //        holder.saveElement.setOnClickListener {
 //            saveImage(imageCount,images[position].imageData)
 //            holder.saveElement.text = "Image saved"
@@ -65,6 +76,9 @@ class ImageAdapter(var images: MutableList<ImageEntity>, var context: Context):R
         holder.image.setImageBitmap(bitmap)
 
     }
+
+
+
 
     private fun saveImage(imageCount:Int, imageData:ByteArray) {
         val imagesDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
