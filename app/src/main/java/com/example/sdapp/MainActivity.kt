@@ -327,19 +327,23 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
             val pickedPhoto = data.data
             if (pickedPhoto != null) {
                 imageName = getFileName(pickedPhoto)
-//                img2img.imageNameElement.text = imageName
-//                pickedImage = MediaStore.Images.Media.getBitmap(this.contentResolver,pickedPhoto)
-//                pickedImage = resizeImage(pickedImage!!)
-                val fragment = supportFragmentManager.findFragmentById(R.id.img2) as? Img2ImgFragment
-                if (fragment != null) {
-                    // Проверяем инициализацию свойства imageNameElement
-                    fragment.imageNameElement.text = imageName
-                }
 
+                findViewById<TextView>(R.id.imageName).text = imageName
 
-                // Обработка изображения
-                pickedImage = MediaStore.Images.Media.getBitmap(this.contentResolver, pickedPhoto)
+                pickedImage = MediaStore.Images.Media.getBitmap(this.contentResolver,pickedPhoto)
                 pickedImage = resizeImage(pickedImage!!)
+
+
+//                val fragment = supportFragmentManager.findFragmentById(R.id.img2) as? Img2ImgFragment
+//                if (fragment != null) {
+//                    // Проверяем инициализацию свойства imageNameElement
+//                    fragment.imageNameElement.text = imageName
+//                }
+//
+//
+//                // Обработка изображения
+//                pickedImage = MediaStore.Images.Media.getBitmap(this.contentResolver, pickedPhoto)
+//                pickedImage = resizeImage(pickedImage!!)
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

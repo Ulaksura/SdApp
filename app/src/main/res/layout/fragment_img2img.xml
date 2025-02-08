@@ -189,14 +189,7 @@
                 android:hint="@string/imageStrength"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
-            <EditText
-                android:id="@+id/apikey"
-                android:layout_width="237dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="@string/apikey"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+
             <CheckBox
                 android:id="@+id/nsfw"
                 android:layout_width="match_parent"

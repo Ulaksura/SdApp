@@ -1,6 +1,9 @@
 package com.example.sdapp.ui.settings
 
 import android.os.Bundle
+import android.preference.PreferenceManager.getDefaultSharedPreferences
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +24,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SettingsFragment : Fragment() {
+    public lateinit var apikeyElement: EditText
+    private var apikeyHidden: Boolean = true
+
 
     private var _binding: FragmentSettingsBinding? = null
 
@@ -79,6 +85,35 @@ class SettingsFragment : Fragment() {
             findNavController().navigate(R.id.navigation_auth)
 
         }
+
+//        apikeyElement = view.findViewById(R.id.editTextApiKey)
+//        apikeyElement.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//
+//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+//                saveApikey(s.toString())
+//            }
+//
+//            override fun afterTextChanged(p0: Editable?) {}
+//        })
+//        val localPreferences = getDefaultSharedPreferences(requireContext())
+//        val apikey = localPreferences.getString("apikey", null)
+//        if(apikey != null){
+//            apikeyElement.setText(apikey)
+//            authUser.setUserAPI(apikey)
+//        }
+    }
+    private fun changeApikeyVisibility() {
+        apikeyHidden = !apikeyHidden
+        if(apikeyHidden) apikeyElement.transformationMethod = HideReturnsTransformationMethod.getInstance()
+        else apikeyElement.transformationMethod = PasswordTransformationMethod.getInstance()
+    }
+
+    private fun saveApikey(apikey: String) {
+        val localPreferences = getDefaultSharedPreferences(requireContext())
+        val preferenceWriter = localPreferences.edit()
+        preferenceWriter.putString("apikey", apikey)
+        preferenceWriter.apply()
     }
 
     override fun onDestroyView() {

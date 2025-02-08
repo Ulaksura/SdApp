@@ -1,11 +1,6 @@
 package com.example.sdapp.ui.img2img
 
 import android.os.Bundle
-import android.preference.PreferenceManager.getDefaultSharedPreferences
-import android.text.Editable
-import android.text.TextWatcher
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +13,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.sdapp.R
+import com.example.sdapp.authUser
 import com.example.sdapp.ui.MainInterface
 import com.example.sdapp.ui.NetworkManager
 import kotlinx.coroutines.CoroutineScope
@@ -49,9 +45,7 @@ class Img2ImgFragment : Fragment() {
     private lateinit var seedElement: EditText
     private lateinit var promptStrengthElement: EditText
     private lateinit var imageStrengthElement: EditText
-    public lateinit var apikeyElement: EditText
 
-    private var apikeyHidden: Boolean = true
     private lateinit var nsfwElement: CheckBox
     private lateinit var censorElement: CheckBox
     private lateinit var generateElement: Button
@@ -133,24 +127,11 @@ class Img2ImgFragment : Fragment() {
         imageStrengthElement = view.findViewById(R.id.imageStrength)
         imageStrengthElement.setText("0.4")
 
-        apikeyElement = view.findViewById(R.id.apikey)
-        apikeyElement.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                saveApikey(s.toString())
-            }
-
-            override fun afterTextChanged(p0: Editable?) {}
-        })
-        val localPreferences = getDefaultSharedPreferences(requireContext())
-        val apikey = localPreferences.getString("apikey", null)
-        if(apikey != null) apikeyElement.setText(apikey)
-
-
         nsfwElement = view.findViewById(R.id.nsfw)
 
         censorElement = view.findViewById(R.id.censor)
+
+
 
         generateElement = view.findViewById(R.id.generate)
         generateElement.setOnClickListener {
@@ -193,7 +174,7 @@ class Img2ImgFragment : Fragment() {
         }
 
         // Optional parameters
-        var apikey: String = apikeyElement.text.toString()
+        var apikey: String = authUser.UserAPI
         val seed: String = seedElement.text.toString()
         val nsfw: Boolean = nsfwElement.isChecked
         val censor: Boolean = censorElement.isChecked
@@ -365,16 +346,5 @@ class Img2ImgFragment : Fragment() {
         }
     }
 
-    private fun changeApikeyVisibility() {
-        apikeyHidden = !apikeyHidden
-        if(apikeyHidden) apikeyElement.transformationMethod = HideReturnsTransformationMethod.getInstance()
-        else apikeyElement.transformationMethod = PasswordTransformationMethod.getInstance()
-    }
 
-    private fun saveApikey(apikey: String) {
-        val localPreferences = getDefaultSharedPreferences(requireContext())
-        val preferenceWriter = localPreferences.edit()
-        preferenceWriter.putString("apikey", apikey)
-        preferenceWriter.apply()
-    }
 }
