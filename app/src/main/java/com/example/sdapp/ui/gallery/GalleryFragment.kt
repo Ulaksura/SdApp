@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.sdapp.DB.ImageEntity
 import com.example.sdapp.R
 import com.example.sdapp.SharedGalleryViewModel
@@ -53,7 +53,8 @@ class GalleryFragment : Fragment() {
 //        adapter = ImageAdapter(sharedViewModel.galleryImageList.value.orEmpty().toMutableList(), requireContext())
 
         galleryList.adapter = adapter
-        galleryList.layoutManager = LinearLayoutManager(context)
+       // galleryList.layoutManager = LinearLayoutManager(context)
+        galleryList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         sharedViewModel.galleryImageList.observe(viewLifecycleOwner) { newImageList ->
             adapter.images = newImageList.toMutableList()
