@@ -11,9 +11,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sdapp.DB.ImageEntity
 import com.example.sdapp.R
 import com.example.sdapp.SharedGalleryViewModel
-import com.example.sdapp.dbo.ImageEntity
+import com.example.sdapp.authUser
 import com.example.sdapp.ui.MainInterface
 import java.io.File
 import java.io.FileOutputStream
@@ -23,9 +24,6 @@ class ImageAdapter(var images: MutableList<ImageEntity>, var context: Context):R
 
     private lateinit var mainInterface: MainInterface
     private lateinit var fileName: String
-
-
-
 
     class MyViewHolder(view: View):RecyclerView.ViewHolder(view){
         val image: ImageView = view.findViewById(R.id.imageGalleryPicture)
@@ -61,7 +59,7 @@ class ImageAdapter(var images: MutableList<ImageEntity>, var context: Context):R
         }
         holder.deleteElement.setOnClickListener {
             val img = images[position]
-            deleteImage(context, img, position)
+            deleteImage(context, img, position, authUser.idAuthUser)
             notifyItemRangeChanged(position,images.size)
         }
 
@@ -84,8 +82,8 @@ class ImageAdapter(var images: MutableList<ImageEntity>, var context: Context):R
 
     }
 
-    private fun deleteImage(context: Context, imageEntity: ImageEntity, position: Int){
-        SharedGalleryViewModel().deleteImageFromDatabase(context,imageEntity)
+    private fun deleteImage(context: Context, imageEntity: ImageEntity, position: Int, userId: Int){
+        SharedGalleryViewModel().deleteImageFromDatabase(context,imageEntity, userId)
         images.remove(imageEntity)
         notifyItemRemoved(position)
     }

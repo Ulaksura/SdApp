@@ -10,10 +10,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sdapp.DB.ImageEntity
 import com.example.sdapp.R
 import com.example.sdapp.SharedGalleryViewModel
+import com.example.sdapp.authUser
 import com.example.sdapp.databinding.FragmentGalleryBinding
-import com.example.sdapp.dbo.ImageEntity
 
 
 class GalleryFragment : Fragment() {
@@ -65,7 +66,7 @@ class GalleryFragment : Fragment() {
     }
     override fun onResume() {
         super.onResume()
-        sharedViewModel.reLoadAllImagesFromDatabase(requireContext())
+        sharedViewModel.reLoadAllImagesFromDatabase(requireContext(), authUser.idAuthUser)
     }
 
 }

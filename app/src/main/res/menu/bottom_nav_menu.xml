@@ -11,9 +11,9 @@
         android:icon="@drawable/camera"
         android:title="@string/title_gallery" />
 
-<!--    <item-->
-<!--        android:id="@+id/navigation_settings"-->
-<!--        android:icon="@drawable/ic_gallery_black_24dp"-->
-<!--        android:title="@string/title_settings" />-->
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_gallery_black_24dp"
+        android:title="@string/title_settings" />
 
 </menu>

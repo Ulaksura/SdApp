@@ -29,8 +29,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.sdapp.DB.ImageEntity
 import com.example.sdapp.databinding.ActivityMainBinding
-import com.example.sdapp.dbo.ImageEntity
+import com.example.sdapp.start.AuthUser
 import com.example.sdapp.ui.FragmentManager
 import com.example.sdapp.ui.GenerationFragment
 import com.example.sdapp.ui.MainInterface
@@ -53,6 +54,7 @@ import java.io.IOException
 import java.net.URL
 import kotlin.math.floor
 
+public var authUser:AuthUser = AuthUser(isAuthUser = false, idAuthUser = 0, user = null, UserAPI = "")
 
 class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWindowFocusChangeListener {
 
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedViewModel.loadAllImagesFromDatabase(this)
+        sharedViewModel.loadAllImagesFromDatabase(this, authUser.idAuthUser)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -92,7 +94,16 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.navigation_reg, R.id.navigation_auth, R.id.navigation_generate, R.id.navigation_imageDisplay -> {
+                    binding.navView.visibility = View.GONE
+                }
+                else -> {
+                    binding.navView.visibility = View.VISIBLE
+                }
+            }
+        }
 
         initialize()
     }
@@ -160,7 +171,7 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
         }
     }
 
-    private fun addGallery(image:ImageEntity){
+    private fun addGallery(image: ImageEntity){
         sharedViewModel.addImageToDatabase(this, image)
     }
 
@@ -270,7 +281,7 @@ class MainActivity : AppCompatActivity(), MainInterface, ViewTreeObserver.OnWind
                 }
             }
             withContext(Dispatchers.Main) {
-                addGallery(ImageEntity(imageData = imageData,url = imgUrl,seed = seedUsed,prompt = prompt))
+                addGallery(ImageEntity(imageData = imageData,url = imgUrl,seed = seedUsed,prompt = prompt, userId = authUser.idAuthUser))
                 showImage(imageData, seedUsed, request, prompt)
 
             }
